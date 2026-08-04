@@ -11,7 +11,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox",
     "electron": "electron .",
     "electron:dev": "concurrently -k -n ng,electron -c blue,green \"ng serve\" \"wait-on tcp:4200 && cross-env NODE_ENV=development electron .\"",
     "electron:build": "ng build && electron .",

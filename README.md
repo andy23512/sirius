@@ -176,9 +176,14 @@ that layer so the correct label is shown.
 ## Tests
 
 ```bash
-npm run test:ci   # headless single run (ChromeHeadless)
+npm run test:ci   # headless single run (ChromeHeadlessNoSandbox)
 npm test          # watch mode
 ```
+
+CI runs `test:ci` + `build` on every push (to `main`/`master`) and pull request
+via GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)). The
+`ChromeHeadlessNoSandbox` launcher (in `karma.conf.js`) adds `--no-sandbox` so the
+tests run on CI runners.
 
 The live-highlighting logic is covered by unit tests:
 
