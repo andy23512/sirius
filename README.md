@@ -1,6 +1,10 @@
 # Sirius
 
 [![CI](https://github.com/andy23512/sirius/actions/workflows/ci.yml/badge.svg)](https://github.com/andy23512/sirius/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/andy23512/sirius)](https://github.com/andy23512/sirius/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/andy23512/sirius/total)](https://github.com/andy23512/sirius/releases)
+[![License: MIT](https://img.shields.io/github/license/andy23512/sirius)](LICENSE)
+![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
 
 ![Sirius — the CharaChorder 3D layout with pressed keys lit up](docs/screenshot.png)
 
