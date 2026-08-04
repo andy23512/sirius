@@ -1,41 +1,41 @@
-@if (!overlay()) {
-  <section class="toolbar">
-    <!-- Layer selector -->
-    <div class="toggle-group" role="group" aria-label="Layer">
-      @for (layer of layers(); track layer) {
-        <button
-          type="button"
-          class="toggle"
-          [class.toggle--active]="currentLayer() === layer"
-          (click)="setLayer(layer)"
-          [title]="'Layer ' + layer"
-        >
-          {{ profilePrefix() }}{{ layer }}
-        </button>
-      }
-    </div>
+<!-- Kept in the layout flow (hidden, not removed) in overlay mode so the layout
+     doesn't shift position when toggling passthrough. -->
+<section class="toolbar" [style.visibility]="overlay() ? 'hidden' : 'visible'">
+  <!-- Layer selector -->
+  <div class="toggle-group" role="group" aria-label="Layer">
+    @for (layer of layers(); track layer) {
+      <button
+        type="button"
+        class="toggle"
+        [class.toggle--active]="currentLayer() === layer"
+        (click)="setLayer(layer)"
+        [title]="'Layer ' + layer"
+      >
+        {{ profilePrefix() }}{{ layer }}
+      </button>
+    }
+  </div>
 
-    <!-- Modifier toggles -->
-    <div class="toggle-group" role="group" aria-label="Modifiers">
-      <button
-        type="button"
-        class="toggle"
-        [class.toggle--active]="shiftKey()"
-        (click)="toggleShift()"
-      >
-        Shift
-      </button>
-      <button
-        type="button"
-        class="toggle"
-        [class.toggle--active]="altGraphKey()"
-        (click)="toggleAltGraph()"
-      >
-        AltGr
-      </button>
-    </div>
-  </section>
-}
+  <!-- Modifier toggles -->
+  <div class="toggle-group" role="group" aria-label="Modifiers">
+    <button
+      type="button"
+      class="toggle"
+      [class.toggle--active]="shiftKey()"
+      (click)="toggleShift()"
+    >
+      Shift
+    </button>
+    <button
+      type="button"
+      class="toggle"
+      [class.toggle--active]="altGraphKey()"
+      (click)="toggleAltGraph()"
+    >
+      AltGr
+    </button>
+  </div>
+</section>
 
 @if (keyLabelMap(); as keyLabelMap) {
   <section class="stage">

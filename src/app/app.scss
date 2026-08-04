@@ -19,10 +19,18 @@
   padding: 12px 16px 16px;
   background: var(--sirius-bg);
 
+  // In passthrough only the background goes transparent; the padding/gap and the
+  // chrome boxes are kept so the layout stays in the exact same on-screen spot —
+  // the chrome is hidden with `visibility` (space reserved), not removed.
   &--passthrough {
-    padding: 0;
     background: transparent;
-    gap: 0;
+
+    .app__header,
+    .keylog,
+    .a11y {
+      visibility: hidden;
+      pointer-events: none;
+    }
   }
 }
 

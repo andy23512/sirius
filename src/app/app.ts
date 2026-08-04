@@ -42,9 +42,6 @@ export class App {
 
   protected readonly settingsOpen = signal(false);
 
-  /** In passthrough the key log is hidden along with the rest of the chrome. */
-  protected readonly showChrome = computed(() => !this.passthrough());
-
   /** The floating overlay controls (drag grip + exit) shown in passthrough mode. */
   private readonly overlayControls = viewChild<ElementRef<HTMLElement>>('overlayControls');
   private isDragging = false;

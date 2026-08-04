@@ -1,82 +1,80 @@
 <div class="app" [class.app--passthrough]="passthrough()">
-  @if (showChrome()) {
-    <header class="app__header">
-      <div class="app__titlearea">
-        <h1>Sirius</h1>
-        <p class="app__subtitle">CharaChorder 3D layout viewer &amp; key tester</p>
-      </div>
-      <div class="app__actions">
+  <header class="app__header">
+    <div class="app__titlearea">
+      <h1>Sirius</h1>
+      <p class="app__subtitle">CharaChorder 3D layout viewer &amp; key tester</p>
+    </div>
+    <div class="app__actions">
+      <button
+        type="button"
+        class="tool-btn"
+        (click)="openSettings()"
+        title="Settings"
+        aria-label="Settings"
+      >
+        <span class="material-symbol">settings</span>
+      </button>
+      <button
+        type="button"
+        class="tool-btn"
+        [class.tool-btn--active]="alwaysOnTop()"
+        (click)="togglePin()"
+        [disabled]="!windowControlsAvailable()"
+        title="Pin to front (always on top)"
+        aria-label="Pin to front"
+      >
+        <span class="material-symbol">push_pin</span>
+      </button>
+      <button
+        type="button"
+        class="tool-btn"
+        [class.tool-btn--active]="passthrough()"
+        (click)="togglePassthrough()"
+        [disabled]="framed()"
+        title="Passthrough overlay (transparent, click-through — ⌘⇧O to exit). Needs frameless window."
+        aria-label="Passthrough overlay"
+      >
+        <span class="material-symbol">visibility</span>
+      </button>
+      @if (windowControlsAvailable()) {
         <button
           type="button"
           class="tool-btn"
-          (click)="openSettings()"
-          title="Settings"
-          aria-label="Settings"
+          [class.tool-btn--active]="framed()"
+          (click)="toggleFramed()"
+          [title]="
+            framed() ? 'Switch to frameless overlay window' : 'Restore the normal window frame'
+          "
+          aria-label="Toggle window frame"
         >
-          <span class="material-symbol">settings</span>
+          <span class="material-symbol">web_asset</span>
         </button>
+      }
+      @if (showCustomWindowButtons()) {
+        <span class="app__spacer"></span>
         <button
           type="button"
           class="tool-btn"
-          [class.tool-btn--active]="alwaysOnTop()"
-          (click)="togglePin()"
-          [disabled]="!windowControlsAvailable()"
-          title="Pin to front (always on top)"
-          aria-label="Pin to front"
+          (click)="minimize()"
+          title="Minimize"
+          aria-label="Minimize"
         >
-          <span class="material-symbol">push_pin</span>
+          <span class="material-symbol">remove</span>
         </button>
         <button
           type="button"
-          class="tool-btn"
-          [class.tool-btn--active]="passthrough()"
-          (click)="togglePassthrough()"
-          [disabled]="framed()"
-          title="Passthrough overlay (transparent, click-through — ⌘⇧O to exit). Needs frameless window."
-          aria-label="Passthrough overlay"
+          class="tool-btn tool-btn--close"
+          (click)="close()"
+          title="Close"
+          aria-label="Close"
         >
-          <span class="material-symbol">visibility</span>
+          <span class="material-symbol">close</span>
         </button>
-        @if (windowControlsAvailable()) {
-          <button
-            type="button"
-            class="tool-btn"
-            [class.tool-btn--active]="framed()"
-            (click)="toggleFramed()"
-            [title]="
-              framed() ? 'Switch to frameless overlay window' : 'Restore the normal window frame'
-            "
-            aria-label="Toggle window frame"
-          >
-            <span class="material-symbol">web_asset</span>
-          </button>
-        }
-        @if (showCustomWindowButtons()) {
-          <span class="app__spacer"></span>
-          <button
-            type="button"
-            class="tool-btn"
-            (click)="minimize()"
-            title="Minimize"
-            aria-label="Minimize"
-          >
-            <span class="material-symbol">remove</span>
-          </button>
-          <button
-            type="button"
-            class="tool-btn tool-btn--close"
-            (click)="close()"
-            title="Close"
-            aria-label="Close"
-          >
-            <span class="material-symbol">close</span>
-          </button>
-        }
-      </div>
-    </header>
-  }
+      }
+    </div>
+  </header>
 
-  @if (showChrome() && accessibilityBlocking()) {
+  @if (accessibilityBlocking()) {
     <div class="banner banner--error a11y">
       <span>
         Sirius needs macOS <strong>Accessibility</strong> permission to capture keys from other
@@ -89,44 +87,42 @@
 
   <app-layout-viewer class="app__viewer" [overlay]="passthrough()"></app-layout-viewer>
 
-  @if (showChrome()) {
-    <details class="keylog">
-      <summary>
-        Key tester
-        <span class="keylog__count">({{ events().length }})</span>
-        @if (!connected()) {
-          <span class="keylog__count keylog__count--off">— local keys only</span>
-        }
-      </summary>
+  <details class="keylog">
+    <summary>
+      Key tester
+      <span class="keylog__count">({{ events().length }})</span>
       @if (!connected()) {
-        <div class="banner banner--warn">
-          Electron bridge offline — capturing only keys pressed in this window. Run
-          <code>npm run electron:dev</code> to capture global keys (any app).
-        </div>
+        <span class="keylog__count keylog__count--off">— local keys only</span>
       }
-      <div class="keylog__toolbar">
-        <button type="button" class="btn" (click)="clear()" [disabled]="events().length === 0">
-          Clear
-        </button>
+    </summary>
+    @if (!connected()) {
+      <div class="banner banner--warn">
+        Electron bridge offline — capturing only keys pressed in this window. Run
+        <code>npm run electron:dev</code> to capture global keys (any app).
       </div>
-      @if (events().length === 0) {
-        <p class="empty">Press any key…</p>
-      } @else {
-        <ul class="log">
-          @for (event of events(); track $index) {
-            <li class="log__row" [class.log__row--up]="event.type === 'keyup'">
-              <span class="tag" [class.tag--up]="event.type === 'keyup'">{{ event.type }}</span>
-              <span class="key">{{ event.key }}</span>
-              <span class="code">{{ event.code ?? 'code ' + event.keycode }}</span>
-              @if (modifiers(event)) {
-                <span class="mods">{{ modifiers(event) }}</span>
-              }
-            </li>
-          }
-        </ul>
-      }
-    </details>
-  }
+    }
+    <div class="keylog__toolbar">
+      <button type="button" class="btn" (click)="clear()" [disabled]="events().length === 0">
+        Clear
+      </button>
+    </div>
+    @if (events().length === 0) {
+      <p class="empty">Press any key…</p>
+    } @else {
+      <ul class="log">
+        @for (event of events(); track $index) {
+          <li class="log__row" [class.log__row--up]="event.type === 'keyup'">
+            <span class="tag" [class.tag--up]="event.type === 'keyup'">{{ event.type }}</span>
+            <span class="key">{{ event.key }}</span>
+            <span class="code">{{ event.code ?? 'code ' + event.keycode }}</span>
+            @if (modifiers(event)) {
+              <span class="mods">{{ modifiers(event) }}</span>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </details>
 
   @if (passthrough()) {
     <div #overlayControls class="overlay-controls">
