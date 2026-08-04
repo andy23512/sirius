@@ -31,7 +31,9 @@
         [style.font-family]="render(label).fontFamily"
         [style.font-feature-settings]="render(label).fontFeature"
         [attr.fill]="color(label)"
-      >{{ render(label).text }}</svg:text>
+      >
+        {{ render(label).text }}
+      </svg:text>
     </svg:g>
   }
 }

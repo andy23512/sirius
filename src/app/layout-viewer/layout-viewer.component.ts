@@ -17,10 +17,7 @@ import {
   pressedPositions,
 } from './code-to-positions';
 import { DeviceLayoutService } from './device-layout.service';
-import {
-  buildKeyLabelMap,
-  getHighlightPositionCodes,
-} from './key-label-map';
+import { buildKeyLabelMap, getHighlightPositionCodes } from './key-label-map';
 import { KeyboardLayoutService } from './keyboard-layout.service';
 import { LayoutComponent } from './layout/layout.component';
 import { getOperatingSystem } from './operating-system';
@@ -47,8 +44,7 @@ export class LayoutViewerComponent {
   readonly Layer = Layer;
 
   private readonly deviceLayout = this.deviceLayoutService.selectedEntity;
-  private readonly deviceLayoutLayerNumber =
-    this.deviceLayoutService.selectedEntityLayerNumber;
+  private readonly deviceLayoutLayerNumber = this.deviceLayoutService.selectedEntityLayerNumber;
   private readonly keyboardLayout = this.keyboardLayoutService.selectedEntity;
   readonly hasDeadKey = this.keyboardLayoutService.hasDeadKey;
   readonly showThumb3Switch = this.viewSettings.showThumb3Switch;
@@ -59,15 +55,9 @@ export class LayoutViewerComponent {
   readonly currentLayer = signal<Layer>(Layer.Primary);
   private readonly shiftManual = signal(false);
   private readonly altGraphManual = signal(false);
-  private readonly liveMods = computed(() =>
-    liveModifiers(this.globalKeyService.pressedCodes()),
-  );
-  readonly shiftKey = computed(
-    () => this.shiftManual() || this.liveMods().shift,
-  );
-  readonly altGraphKey = computed(
-    () => this.altGraphManual() || this.liveMods().altGraph,
-  );
+  private readonly liveMods = computed(() => liveModifiers(this.globalKeyService.pressedCodes()));
+  readonly shiftKey = computed(() => this.shiftManual() || this.liveMods().shift);
+  readonly altGraphKey = computed(() => this.altGraphManual() || this.liveMods().altGraph);
 
   readonly layers = computed<Layer[]>(() =>
     [Layer.Primary, Layer.Secondary, Layer.Tertiary, Layer.Quaternary].slice(
@@ -77,11 +67,7 @@ export class LayoutViewerComponent {
   );
 
   readonly keyLabelMap = computed(() =>
-    buildKeyLabelMap(
-      this.deviceLayout(),
-      this.keyboardLayout(),
-      this.operatingSystem,
-    ),
+    buildKeyLabelMap(this.deviceLayout(), this.keyboardLayout(), this.operatingSystem),
   );
 
   readonly highlightKeyCombination = computed<HighlightKeyCombination>(() => ({
@@ -101,12 +87,8 @@ export class LayoutViewerComponent {
   readonly profilePrefix = computed(() => this.deviceLayout()?.profile ?? 'A');
 
   // Live key highlighting: map held DOM codes to layout positions.
-  private readonly codeToPositions = computed(() =>
-    buildCodeToPositions(this.deviceLayout()),
-  );
-  private readonly codeToLayers = computed(() =>
-    buildCodeToLayers(this.deviceLayout()),
-  );
+  private readonly codeToPositions = computed(() => buildCodeToPositions(this.deviceLayout()));
+  private readonly codeToLayers = computed(() => buildCodeToLayers(this.deviceLayout()));
   readonly pressedPositions = computed(() =>
     pressedPositions(this.codeToPositions(), this.globalKeyService.pressedCodes()),
   );

@@ -44,9 +44,7 @@
             [class.tool-btn--active]="framed()"
             (click)="toggleFramed()"
             [title]="
-              framed()
-                ? 'Switch to frameless overlay window'
-                : 'Restore the normal window frame'
+              framed() ? 'Switch to frameless overlay window' : 'Restore the normal window frame'
             "
             aria-label="Toggle window frame"
           >
@@ -81,21 +79,15 @@
   @if (showChrome() && accessibilityBlocking()) {
     <div class="banner banner--error a11y">
       <span>
-        Sirius needs macOS <strong>Accessibility</strong> permission to capture
-        keys from other apps. Enable Sirius under
-        <em>System Settings → Privacy &amp; Security → Accessibility</em>, then
-        restart the app.
+        Sirius needs macOS <strong>Accessibility</strong> permission to capture keys from other
+        apps. Enable Sirius under <em>System Settings → Privacy &amp; Security → Accessibility</em>,
+        then restart the app.
       </span>
-      <button type="button" class="btn" (click)="openAccessibilitySettings()">
-        Open Settings
-      </button>
+      <button type="button" class="btn" (click)="openAccessibilitySettings()">Open Settings</button>
     </div>
   }
 
-  <app-layout-viewer
-    class="app__viewer"
-    [overlay]="passthrough()"
-  ></app-layout-viewer>
+  <app-layout-viewer class="app__viewer" [overlay]="passthrough()"></app-layout-viewer>
 
   @if (showChrome()) {
     <details class="keylog">
@@ -113,12 +105,7 @@
         </div>
       }
       <div class="keylog__toolbar">
-        <button
-          type="button"
-          class="btn"
-          (click)="clear()"
-          [disabled]="events().length === 0"
-        >
+        <button type="button" class="btn" (click)="clear()" [disabled]="events().length === 0">
           Clear
         </button>
       </div>
@@ -128,9 +115,7 @@
         <ul class="log">
           @for (event of events(); track $index) {
             <li class="log__row" [class.log__row--up]="event.type === 'keyup'">
-              <span class="tag" [class.tag--up]="event.type === 'keyup'">{{
-                event.type
-              }}</span>
+              <span class="tag" [class.tag--up]="event.type === 'keyup'">{{ event.type }}</span>
               <span class="key">{{ event.key }}</span>
               <span class="code">{{ event.code ?? 'code ' + event.keycode }}</span>
               @if (modifiers(event)) {

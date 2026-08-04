@@ -9,10 +9,7 @@ const ACCEPTED_DEVICES = ['One', 'ONE', 'TWO', 'M4G'];
  * bare layout object ({ layout: [...] }). Ported from Alnitak's
  * loadDeviceLayoutFile() + DeviceLayoutImportDialog.
  */
-export function parseDeviceLayoutFile(
-  fileName: string,
-  text: string,
-): DeviceLayout {
+export function parseDeviceLayoutFile(fileName: string, text: string): DeviceLayout {
   let data: unknown;
   try {
     data = JSON.parse(text);
@@ -29,8 +26,7 @@ export function parseDeviceLayoutFile(
       layoutItem =
         firstHistory.find(
           (item: { type?: string; device?: string }) =>
-            item?.type === 'layout' &&
-            ACCEPTED_DEVICES.includes(item?.device ?? ''),
+            item?.type === 'layout' && ACCEPTED_DEVICES.includes(item?.device ?? ''),
         ) ?? null;
     }
   } else {
@@ -54,9 +50,7 @@ export function parseDeviceLayoutFile(
 
 function validateLayoutShape(layout: unknown[]): void {
   if (layout.length < 3 || layout.length > 4) {
-    throw new Error(
-      `Expected 3 or 4 layers, found ${layout.length}.`,
-    );
+    throw new Error(`Expected 3 or 4 layers, found ${layout.length}.`);
   }
   for (const layer of layout) {
     if (

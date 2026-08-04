@@ -1,0 +1,8 @@
+# Generated / vendored — not formatted
+dist
+release
+coverage
+.angular
+package-lock.json
+src/assets/*.woff2
+build/icon.png

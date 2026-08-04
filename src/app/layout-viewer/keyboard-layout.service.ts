@@ -23,9 +23,7 @@ const KEYBOARD_LAYOUTS: KeyboardLayout[] = [
 @Injectable({ providedIn: 'root' })
 export class KeyboardLayoutService {
   readonly entities = KEYBOARD_LAYOUTS;
-  readonly selectedId = signal<string>(
-    localStorage.getItem(SELECTED_KEY) ?? DEFAULT_ID,
-  );
+  readonly selectedId = signal<string>(localStorage.getItem(SELECTED_KEY) ?? DEFAULT_ID);
 
   readonly selectedEntity = computed<KeyboardLayout | null>(
     () => this.entities.find((k) => k.id === this.selectedId()) ?? null,

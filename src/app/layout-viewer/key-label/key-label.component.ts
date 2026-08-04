@@ -32,13 +32,13 @@ export class KeyLabelComponent {
     const highlightKeyCombination = this.highlightKeyCombination();
     return Boolean(
       highlightKeyCombination &&
-        ((label.layer === highlightKeyCombination.layer &&
-          label.shiftKey === highlightKeyCombination.shiftKey &&
-          label.altGraphKey === highlightKeyCombination.altGraphKey) ||
-          label.layer === null ||
-          (label.layer === highlightKeyCombination.layer &&
-            label.shiftKey === null &&
-            label.altGraphKey === null)),
+      ((label.layer === highlightKeyCombination.layer &&
+        label.shiftKey === highlightKeyCombination.shiftKey &&
+        label.altGraphKey === highlightKeyCombination.altGraphKey) ||
+        label.layer === null ||
+        (label.layer === highlightKeyCombination.layer &&
+          label.shiftKey === null &&
+          label.altGraphKey === null)),
     );
   }
 

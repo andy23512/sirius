@@ -19,9 +19,7 @@
   [attr.cy]="center().y"
   [attr.r]="53.68"
   [attr.opacity]="
-    highlightKeyCombination()?.positionCodes?.includes(positionCodeMap().c)
-      ? highlightOpacity()
-      : 0
+    highlightKeyCombination()?.positionCodes?.includes(positionCodeMap().c) ? highlightOpacity() : 0
   "
 ></svg:circle>
 <svg:circle
@@ -30,9 +28,7 @@
   [attr.cy]="center().y"
   [attr.r]="53.68"
   [attr.opacity]="
-    secondaryHighlightPositions().includes(positionCodeMap().c)
-      ? highlightOpacity()
-      : 0
+    secondaryHighlightPositions().includes(positionCodeMap().c) ? highlightOpacity() : 0
   "
 ></svg:circle>
 <svg:g

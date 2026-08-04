@@ -50,9 +50,7 @@ export function buildCodeToPositions(
   const seen = new Set<string>(); // `${code}|${position}|${needsShift}`
   for (let position = 0; position < 90; position += 1) {
     for (let layer = 0; layer < layerNumber; layer += 1) {
-      const action = ACTIONS.find(
-        (a) => a.codeId === deviceLayout.layout[layer][position],
-      );
+      const action = ACTIONS.find((a) => a.codeId === deviceLayout.layout[layer][position]);
       let code: string | null = null;
       let needsShift = false;
       if (action?.type === ActionType.WSK && action.keyCode) {
@@ -80,9 +78,7 @@ export function buildCodeToPositions(
  * switch the viewer to the layer that produces a pressed key — e.g. pressing a
  * number that only exists on the secondary layer switches to that layer.
  */
-export function buildCodeToLayers(
-  deviceLayout: DeviceLayout | null,
-): Record<string, Layer[]> {
+export function buildCodeToLayers(deviceLayout: DeviceLayout | null): Record<string, Layer[]> {
   const layerSets: Record<string, Set<number>> = {};
   if (!deviceLayout) {
     return {};
@@ -90,12 +86,9 @@ export function buildCodeToLayers(
   const layerNumber = deviceLayout.layout.length;
   for (let position = 0; position < 90; position += 1) {
     for (let layer = 0; layer < layerNumber; layer += 1) {
-      const action = ACTIONS.find(
-        (a) => a.codeId === deviceLayout.layout[layer][position],
-      );
+      const action = ACTIONS.find((a) => a.codeId === deviceLayout.layout[layer][position]);
       if (
-        (action?.type === ActionType.WSK ||
-          action?.type === ActionType.NonWSK) &&
+        (action?.type === ActionType.WSK || action?.type === ActionType.NonWSK) &&
         action.keyCode
       ) {
         const code = normalizeCode(action.keyCode);
@@ -134,8 +127,7 @@ export function pressedPositions(
   codeToPositions: Record<string, CodePosition[]>,
   pressedCodes: ReadonlySet<string>,
 ): number[] {
-  const shiftHeld =
-    pressedCodes.has('ShiftLeft') || pressedCodes.has('ShiftRight');
+  const shiftHeld = pressedCodes.has('ShiftLeft') || pressedCodes.has('ShiftRight');
   const positions = new Set<number>();
   for (const code of pressedCodes) {
     for (const entry of codeToPositions[code] ?? []) {

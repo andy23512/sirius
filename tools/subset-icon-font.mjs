@@ -28,8 +28,7 @@ if (!existsSync(FONT_IN)) {
   );
   process.exit(1);
 }
-const ICON_DTS =
-  'node_modules/tangent-cc-lib/dist/lib/type/key-label-icon.type.d.ts';
+const ICON_DTS = 'node_modules/tangent-cc-lib/dist/lib/type/key-label-icon.type.d.ts';
 
 // Icons whose ligature glyph has no cmap codepoint; provide the PUA codepoint.
 const codePointsOverride = {
@@ -53,10 +52,7 @@ const UI_ICONS = [
 
 // Extract the icon names from `export type KeyLabelIcon = 'a' | 'b' | ...;`.
 const dts = readFileSync(ICON_DTS, 'utf-8');
-const iconSet = new Set([
-  ...[...dts.matchAll(/'([a-z0-9_]+)'/g)].map((m) => m[1]),
-  ...UI_ICONS,
-]);
+const iconSet = new Set([...[...dts.matchAll(/'([a-z0-9_]+)'/g)].map((m) => m[1]), ...UI_ICONS]);
 if (iconSet.size === 0) {
   console.error('No icon names found in', ICON_DTS);
   process.exit(1);

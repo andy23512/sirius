@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  HostListener,
   computed,
   inject,
   output,
@@ -39,9 +40,7 @@ export class SettingsDialogComponent {
     if (!query) {
       return this.keyboardLayouts;
     }
-    return this.keyboardLayouts.filter((k) =>
-      k.name.toLowerCase().includes(query),
-    );
+    return this.keyboardLayouts.filter((k) => k.name.toLowerCase().includes(query));
   });
 
   readonly showThumb3Switch = this.viewSettings.showThumb3Switch;
@@ -67,6 +66,11 @@ export class SettingsDialogComponent {
     this.closed.emit();
   }
 
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.close();
+  }
+
   async onFileSelected(event: Event): Promise<void> {
     this.uploadError.set(null);
     const input = event.target as HTMLInputElement;
@@ -79,9 +83,7 @@ export class SettingsDialogComponent {
       const layout = parseDeviceLayoutFile(file.name, text);
       this.deviceLayoutService.addLayouts([layout]);
     } catch (error) {
-      this.uploadError.set(
-        error instanceof Error ? error.message : 'Failed to read file.',
-      );
+      this.uploadError.set(error instanceof Error ? error.message : 'Failed to read file.');
     } finally {
       input.value = '';
     }

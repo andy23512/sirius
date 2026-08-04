@@ -6,8 +6,7 @@ import { LayoutViewerComponent } from './layout-viewer.component';
 
 function wsk(keyCode: string): number {
   return ACTIONS.find(
-    (a) =>
-      a.type === ActionType.WSK && a.keyCode === keyCode && a.withShift === false,
+    (a) => a.type === ActionType.WSK && a.keyCode === keyCode && a.withShift === false,
   )!.codeId;
 }
 

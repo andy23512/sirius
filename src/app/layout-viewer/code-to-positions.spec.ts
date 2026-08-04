@@ -10,10 +10,7 @@ import {
 /** Resolve the action codeId that emits a given key, from the real action table. */
 function wskCode(keyCode: string, withShift = false): number {
   const action = ACTIONS.find(
-    (a) =>
-      a.type === ActionType.WSK &&
-      a.keyCode === keyCode &&
-      a.withShift === withShift,
+    (a) => a.type === ActionType.WSK && a.keyCode === keyCode && a.withShift === withShift,
   );
   if (!action) {
     throw new Error(`No WSK action for ${keyCode} (shift=${withShift})`);
@@ -21,9 +18,7 @@ function wskCode(keyCode: string, withShift = false): number {
   return action.codeId;
 }
 function nonWskCode(keyCode: string): number {
-  const action = ACTIONS.find(
-    (a) => a.type === ActionType.NonWSK && a.keyCode === keyCode,
-  );
+  const action = ACTIONS.find((a) => a.type === ActionType.NonWSK && a.keyCode === keyCode);
   if (!action) {
     throw new Error(`No NonWSK action for ${keyCode}`);
   }

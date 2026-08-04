@@ -9,8 +9,7 @@ import { WindowControls } from './global-key';
 @Injectable({ providedIn: 'root' })
 export class WindowService {
   private readonly zone = inject(NgZone);
-  private readonly controls: WindowControls | undefined =
-    window.sirius?.windowControls;
+  private readonly controls: WindowControls | undefined = window.sirius?.windowControls;
 
   /** True when running under Electron (window effects actually apply). */
   readonly available = signal(Boolean(this.controls));
@@ -23,11 +22,7 @@ export class WindowService {
 
   constructor() {
     if (this.controls) {
-      const sync = (state: {
-        framed: boolean;
-        alwaysOnTop: boolean;
-        passthrough: boolean;
-      }) =>
+      const sync = (state: { framed: boolean; alwaysOnTop: boolean; passthrough: boolean }) =>
         this.zone.run(() => {
           this.framed.set(state.framed);
           this.alwaysOnTop.set(state.alwaysOnTop);

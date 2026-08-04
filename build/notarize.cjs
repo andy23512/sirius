@@ -18,18 +18,12 @@ exports.default = async function notarizing(context) {
   const appPath = `${appOutDir}/${appName}.app`;
 
   const hasApiKey =
-    process.env.APPLE_API_KEY &&
-    process.env.APPLE_API_KEY_ID &&
-    process.env.APPLE_API_ISSUER;
+    process.env.APPLE_API_KEY && process.env.APPLE_API_KEY_ID && process.env.APPLE_API_ISSUER;
   const hasAppleId =
-    process.env.APPLE_ID &&
-    process.env.APPLE_APP_SPECIFIC_PASSWORD &&
-    process.env.APPLE_TEAM_ID;
+    process.env.APPLE_ID && process.env.APPLE_APP_SPECIFIC_PASSWORD && process.env.APPLE_TEAM_ID;
 
   if (!hasApiKey && !hasAppleId) {
-    console.log(
-      'Skipping notarization: no Apple credentials in the environment.',
-    );
+    console.log('Skipping notarization: no Apple credentials in the environment.');
     return;
   }
 

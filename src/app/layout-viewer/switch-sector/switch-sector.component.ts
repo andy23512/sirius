@@ -29,12 +29,8 @@ export class SwitchSectorComponent {
   readonly r1 = computed(() => R1);
   readonly r2 = computed(() => R2 - this.strokeWidth());
 
-  readonly alpha1 = computed(
-    () => (Math.asin(((o / 2) * Math.SQRT2) / this.r1()) / Math.PI) * 180,
-  );
-  readonly alpha2 = computed(
-    () => (Math.asin(((o / 2) * Math.SQRT2) / this.r2()) / Math.PI) * 180,
-  );
+  readonly alpha1 = computed(() => (Math.asin(((o / 2) * Math.SQRT2) / this.r1()) / Math.PI) * 180);
+  readonly alpha2 = computed(() => (Math.asin(((o / 2) * Math.SQRT2) / this.r2()) / Math.PI) * 180);
 
   readonly sectorPath = computed(() => {
     const center = this.center();

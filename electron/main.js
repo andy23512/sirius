@@ -44,9 +44,7 @@ function loadPersisted() {
 }
 function savePersisted() {
   const bounds =
-    mainWindow && !mainWindow.isDestroyed()
-      ? mainWindow.getBounds()
-      : persisted.bounds;
+    mainWindow && !mainWindow.isDestroyed() ? mainWindow.getBounds() : persisted.bounds;
   persisted = { bounds, framed: windowState.framed, alwaysOnTop: windowState.alwaysOnTop };
   try {
     fs.writeFileSync(stateFilePath(), JSON.stringify(persisted));
@@ -71,10 +69,7 @@ function getWindowBounds() {
   const onScreen = screen.getAllDisplays().some((d) => {
     const a = d.workArea;
     return (
-      b.x < a.x + a.width &&
-      b.x + b.width > a.x &&
-      b.y < a.y + a.height &&
-      b.y + b.height > a.y
+      b.x < a.x + a.width && b.x + b.width > a.x && b.y < a.y + a.height && b.y + b.height > a.y
     );
   });
   return onScreen ? b : def;
@@ -351,10 +346,7 @@ function makeStarIcon() {
     for (let i = 0, j = pts.length - 1; i < pts.length; j = i, i += 1) {
       const [xi, yi] = pts[i];
       const [xj, yj] = pts[j];
-      if (
-        yi > py !== yj > py &&
-        px < ((xj - xi) * (py - yi)) / (yj - yi) + xi
-      ) {
+      if (yi > py !== yj > py && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) {
         hit = !hit;
       }
     }

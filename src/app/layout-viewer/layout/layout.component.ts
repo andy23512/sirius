@@ -27,9 +27,7 @@ export class LayoutComponent {
 
   readonly gridRows = computed(() => (this.showThumb3Switch() ? 5 : 4));
   readonly viewBoxWidth = cellSize * gridColumns + gap * (gridColumns - 1);
-  readonly viewBoxHeight = computed(
-    () => cellSize * this.gridRows() + gap * (this.gridRows() - 1),
-  );
+  readonly viewBoxHeight = computed(() => cellSize * this.gridRows() + gap * (this.gridRows() - 1));
 
   readonly positionCodeLayout = POSITION_CODE_LAYOUT;
   readonly sides = ['left', 'right'] as const;
@@ -67,7 +65,10 @@ export class LayoutComponent {
     return columnIndex * (cellSize + gap) + cellSize / 2;
   }
 
-  switchCenter(sw: keyof FingerMap<unknown>, side: keyof HandMap<unknown>): {
+  switchCenter(
+    sw: keyof FingerMap<unknown>,
+    side: keyof HandMap<unknown>,
+  ): {
     x: number;
     y: number;
   } {

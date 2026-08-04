@@ -1,0 +1,46 @@
+name: Release
+
+# Push a version tag (e.g. `v1.2.0`, matching package.json version) to build
+# installers for each OS and attach them to a GitHub Release.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write # create the release and upload assets
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build renderer
+        run: npm run build
+
+      - name: Package (unsigned)
+        run: npx electron-builder --publish never
+        env:
+          # No signing certs in CI — keep the build unsigned instead of failing.
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.dmg
+            release/*.exe
+            release/*.AppImage
+          fail_on_unmatched_files: false

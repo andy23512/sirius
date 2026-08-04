@@ -2,8 +2,13 @@
 
 [![CI](https://github.com/andy23512/sirius/actions/workflows/ci.yml/badge.svg)](https://github.com/andy23512/sirius/actions/workflows/ci.yml)
 
+![Sirius — the CharaChorder 3D layout with pressed keys lit up](docs/screenshot.png)
+
 A cross-platform desktop key tester for CharaChorder 3D devices, built with
 **Angular 20** + **Electron**. It has two parts:
+
+> The screenshot is generated with `npm run screenshot`
+> ([tools/screenshot.cjs](tools/screenshot.cjs)).
 
 1. **Layout viewer** — draws the CharaChorder 3D layout as SVG and shows each
    key's character/label. Supports selecting a built-in device layout, uploading
@@ -100,7 +105,7 @@ one-to-one keyboard keystroke can't be reflected accurately. Known cases:
   unsupported, including:
   - **Layer / keymap switches** — `PrimaryKeymapLeft/Right`,
     `SecondaryKeymapLeft/Right`, `TertiaryKeymapLeft/Right`,
-    `QuaternaryKeymapLeft/Right`. (The layer *follows* the key you then type, but
+    `QuaternaryKeymapLeft/Right`. (The layer _follows_ the key you then type, but
     the switch key itself never lights.)
   - **Mouse actions** — `MouseLeftClick`, `MouseRightClick`, `MouseMiddleClick`,
     `MouseMove*`, `MouseScrollCoast*` (these are mouse events; we only hook the
@@ -127,7 +132,7 @@ one-to-one keyboard keystroke can't be reflected accurately. Known cases:
   `Alt`+numpad sequence (Windows only); the hook sees the `Alt`/numpad events, not
   the position that triggered them.
 - **Keyboard remapping / customization tools** (Karabiner-Elements, AutoHotkey,
-  PowerToys Keyboard Manager, `hidutil`, etc.). If the OS remaps a key *after* the
+  PowerToys Keyboard Manager, `hidutil`, etc.). If the OS remaps a key _after_ the
   device sends it, the hook sees the **remapped** key, so the position that lights
   reflects the remap — not the physical key pressed on the device.
 - **Ambiguous keys.** A key that exists on several positions or layers lights
@@ -137,7 +142,7 @@ one-to-one keyboard keystroke can't be reflected accurately. Known cases:
   `IntlRo`, `IntlYen`, some `Numpad*` variants) may have no matching DOM `code`
   from the hook and won't light.
 
-Note that the *character labels* also assume the selected OS keyboard layout
+Note that the _character labels_ also assume the selected OS keyboard layout
 matches the OS's actual active layout; if they differ, the labels are wrong even
 though the positions still light correctly (position mapping is layout-independent).
 
@@ -261,6 +266,23 @@ Notes:
 - Because the packaged app's identity is **Sirius** (not `Electron`), it appears as
   “Sirius” in System Settings → Accessibility — grant it there for global capture.
 
+### Releases
+
+Pushing a version tag builds installers for macOS, Windows and Linux and attaches
+them to a GitHub Release ([.github/workflows/release.yml](.github/workflows/release.yml)):
+
+```bash
+npm version 1.2.0        # bump package.json (creates a matching commit + tag)
+git push --follow-tags   # pushes the v1.2.0 tag → triggers the release workflow
+```
+
+The artifacts are **unsigned** (see below), so:
+
+- **macOS** — right-click the app → **Open** (or `xattr -dr com.apple.quarantine
+/Applications/Sirius.app`) to get past Gatekeeper.
+- **Windows** — SmartScreen: **More info → Run anyway**.
+- **Linux** — `chmod +x Sirius-*.AppImage` and run it.
+
 ### Signing & notarization (macOS)
 
 The mac config is **ready to sign + notarize**, and gracefully produces an
@@ -314,11 +336,24 @@ polls, so the banner clears on its own once you grant it (`AccessibilityService`
 ← `window.sirius.accessibility`). On non-macOS platforms no permission is needed
 and the banner never shows.
 
+## Platform notes
+
+- **macOS** — needs the Accessibility permission above. The frameless/transparent
+  overlay, click-through, always-on-top and tray all work. Distributed builds must
+  be signed + notarized (see Packaging) or Gatekeeper blocks them.
+- **Windows** — the global hook works with no special permission. Transparent
+  overlay + click-through work. Unsigned `.exe` installers trip SmartScreen
+  ("More info → Run anyway").
+- **Linux** — works under **X11** (incl. XWayland). Under a native **Wayland**
+  session the global keyboard hook generally **cannot capture keys from other
+  apps** (Wayland restricts global input), and transparency/click-through depend
+  on the compositor. Prefer an X11 session for full functionality.
+
 ## What each event reports
 
-| Field                      | Example    | Notes                                  |
-| -------------------------- | ---------- | -------------------------------------- |
-| `type`                     | `keydown`  | `keydown` or `keyup`                    |
-| `key`                      | `A`        | Name derived from the keycode          |
-| `keycode`                  | `30`       | Raw uiohook keycode (physical key)     |
-| modifiers                  | `Ctrl + Shift` | shift / ctrl / alt / meta state    |
+| Field     | Example        | Notes                              |
+| --------- | -------------- | ---------------------------------- |
+| `type`    | `keydown`      | `keydown` or `keyup`               |
+| `key`     | `A`            | Name derived from the keycode      |
+| `keycode` | `30`           | Raw uiohook keycode (physical key) |
+| modifiers | `Ctrl + Shift` | shift / ctrl / alt / meta state    |

@@ -46,8 +46,7 @@ export class App {
   protected readonly showChrome = computed(() => !this.passthrough());
 
   /** The floating overlay controls (drag grip + exit) shown in passthrough mode. */
-  private readonly overlayControls =
-    viewChild<ElementRef<HTMLElement>>('overlayControls');
+  private readonly overlayControls = viewChild<ElementRef<HTMLElement>>('overlayControls');
   private isDragging = false;
 
   constructor() {

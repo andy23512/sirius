@@ -182,8 +182,7 @@ export function buildKeyLabelMap(
           });
         }
       } else if (action?.type === ActionType.NonKey && action.actionName) {
-        const rawKeyLabel =
-          NON_KEY_ACTION_NAME_2_RAW_KEY_LABEL_MAP[action.actionName];
+        const rawKeyLabel = NON_KEY_ACTION_NAME_2_RAW_KEY_LABEL_MAP[action.actionName];
         if (rawKeyLabel) {
           keyLabels.push({
             ...rawKeyLabel,
@@ -192,10 +191,7 @@ export function buildKeyLabelMap(
             altGraphKey: false,
           });
         }
-      } else if (
-        action?.type === ActionType.WindowsAltCode &&
-        action.character
-      ) {
+      } else if (action?.type === ActionType.WindowsAltCode && action.character) {
         keyLabels.push({
           type: KeyLabelType.String,
           c: action.character,
@@ -240,8 +236,7 @@ export function getHighlightPositionCodes(
   }
   const highlightPositionCodes: number[] = [];
   const modifierKeyPositionCodeMap = getModifierKeyPositionCodeMap(deviceLayout);
-  const layerShiftKeyPositionCodeMap =
-    getLayerShiftPositionCodeMap(deviceLayout);
+  const layerShiftKeyPositionCodeMap = getLayerShiftPositionCodeMap(deviceLayout);
   switch (layer) {
     case Layer.Secondary:
       highlightPositionCodes.push(...layerShiftKeyPositionCodeMap.numShift);

@@ -1,3 +1,5 @@
+<!-- Backdrop is a mouse-only click-to-dismiss; keyboard users use Escape or the close button. -->
+<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
 <div class="backdrop" (click)="close()"></div>
 <div class="dialog" role="dialog" aria-label="Settings">
   <header class="dialog__header">
@@ -56,10 +58,7 @@
           [ngModel]="selectedKeyboardLayoutId()"
           (ngModelChange)="setSelectedKeyboardLayoutId($event)"
         >
-          @for (
-            keyboardLayout of filteredKeyboardLayouts();
-            track keyboardLayout.id
-          ) {
+          @for (keyboardLayout of filteredKeyboardLayouts(); track keyboardLayout.id) {
             <option [ngValue]="keyboardLayout.id">{{ keyboardLayout.name }}</option>
           }
         </select>

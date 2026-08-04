@@ -28,7 +28,5 @@ export class SwitchComponent {
   readonly highlightKeyCombination = input<HighlightKeyCombination | null>(null);
   readonly secondaryHighlightPositions = input<number[]>([]);
 
-  readonly r = computed(
-    () => (this.rotationDirection() === 'cw' ? 1 : -1) * this.rotation(),
-  );
+  readonly r = computed(() => (this.rotationDirection() === 'cw' ? 1 : -1) * this.rotation());
 }

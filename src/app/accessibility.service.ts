@@ -17,18 +17,12 @@ export class AccessibilityService {
   });
 
   /** True when the permission is required but not yet granted. */
-  readonly blocking = computed(
-    () => this.status().needed && !this.status().granted,
-  );
+  readonly blocking = computed(() => this.status().needed && !this.status().granted);
 
   constructor() {
     if (this.api) {
-      this.api
-        .getStatus()
-        .then((status) => this.zone.run(() => this.status.set(status)));
-      this.api.onStatus((status) =>
-        this.zone.run(() => this.status.set(status)),
-      );
+      this.api.getStatus().then((status) => this.zone.run(() => this.status.set(status)));
+      this.api.onStatus((status) => this.zone.run(() => this.status.set(status)));
     }
   }
 

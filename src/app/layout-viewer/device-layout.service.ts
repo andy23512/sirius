@@ -47,9 +47,7 @@ export class DeviceLayoutService {
 
   constructor() {
     effect(() => localStorage.setItem(SELECTED_KEY, this.selectedId()));
-    effect(() =>
-      localStorage.setItem(UPLOADED_KEY, JSON.stringify(this.uploaded())),
-    );
+    effect(() => localStorage.setItem(UPLOADED_KEY, JSON.stringify(this.uploaded())));
   }
 
   setSelectedId(id: string): void {
