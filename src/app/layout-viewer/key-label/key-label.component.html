@@ -1,0 +1,37 @@
+@for (label of labels(); track $index) {
+  @if (isLabelActive(label)) {
+    <svg:g>
+      <svg:title>{{ label.title }}</svg:title>
+      @if (label.type === KeyLabelType.String && label.isDeadKey) {
+        <svg:line
+          [attr.x1]="x()"
+          [attr.y1]="y() - 40"
+          [attr.x2]="x()"
+          [attr.y2]="y() + 40"
+          stroke="#22d3ee"
+          stroke-width="40"
+        ></svg:line>
+      }
+      @if (label.type === KeyLabelType.String && label.isWindowsAltCode) {
+        <svg:line
+          [attr.x1]="x()"
+          [attr.y1]="y() - 40"
+          [attr.x2]="x()"
+          [attr.y2]="y() + 40"
+          stroke="#eab308"
+          stroke-width="40"
+        ></svg:line>
+      }
+      <svg:text
+        [attr.x]="x()"
+        [attr.y]="y()"
+        dominant-baseline="central"
+        text-anchor="middle"
+        [style.font-size.px]="render(label).fontSize"
+        [style.font-family]="render(label).fontFamily"
+        [style.font-feature-settings]="render(label).fontFeature"
+        [attr.fill]="color(label)"
+      >{{ render(label).text }}</svg:text>
+    </svg:g>
+  }
+}

@@ -1,0 +1,58 @@
+@if (!overlay()) {
+  <section class="toolbar">
+    <!-- Layer selector -->
+    <div class="toggle-group" role="group" aria-label="Layer">
+      @for (layer of layers(); track layer) {
+        <button
+          type="button"
+          class="toggle"
+          [class.toggle--active]="currentLayer() === layer"
+          (click)="setLayer(layer)"
+          [title]="'Layer ' + layer"
+        >
+          {{ profilePrefix() }}{{ layer }}
+        </button>
+      }
+    </div>
+
+    <!-- Modifier toggles -->
+    <div class="toggle-group" role="group" aria-label="Modifiers">
+      <button
+        type="button"
+        class="toggle"
+        [class.toggle--active]="shiftKey()"
+        (click)="toggleShift()"
+      >
+        Shift
+      </button>
+      <button
+        type="button"
+        class="toggle"
+        [class.toggle--active]="altGraphKey()"
+        (click)="toggleAltGraph()"
+      >
+        AltGr
+      </button>
+    </div>
+  </section>
+}
+
+@if (keyLabelMap(); as keyLabelMap) {
+  <section class="stage">
+    <app-layout
+      class="layout"
+      [showThumb3Switch]="showThumb3Switch()"
+      [keyLabelMap]="keyLabelMap"
+      [highlightKeyCombination]="highlightKeyCombination()"
+      [secondaryHighlightPositions]="pressedPositions()"
+    ></app-layout>
+    @if (hasDeadKey() && !overlay()) {
+      <div class="legend">
+        <span class="legend__swatch"></span>
+        Dead key
+      </div>
+    }
+  </section>
+} @else if (!overlay()) {
+  <p class="empty">Select a device layout and an OS layout in settings.</p>
+}

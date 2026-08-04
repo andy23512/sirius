@@ -1,0 +1,45 @@
+@for (sector of sectors; track sector) {
+  <svg:g
+    appSwitchSector
+    [center]="center()"
+    [degree]="sector.degree + r()"
+    [direction]="rotationDirection()"
+    [positionCode]="positionCodeMap()[sector.direction]"
+    [keyLabel]="keyLabelMap()[positionCodeMap()[sector.direction]]"
+    [highlightKeyCombination]="highlightKeyCombination()"
+    [secondaryHighlightPositions]="secondaryHighlightPositions()"
+    [strokeWidth]="strokeWidth()"
+    [highlightOpacity]="highlightOpacity()"
+    [fontSize]="fontSize()"
+  ></svg:g>
+}
+<svg:circle
+  style="fill: var(--sirius-accent)"
+  [attr.cx]="center().x"
+  [attr.cy]="center().y"
+  [attr.r]="53.68"
+  [attr.opacity]="
+    highlightKeyCombination()?.positionCodes?.includes(positionCodeMap().c)
+      ? highlightOpacity()
+      : 0
+  "
+></svg:circle>
+<svg:circle
+  style="fill: var(--sirius-pressed)"
+  [attr.cx]="center().x"
+  [attr.cy]="center().y"
+  [attr.r]="53.68"
+  [attr.opacity]="
+    secondaryHighlightPositions().includes(positionCodeMap().c)
+      ? highlightOpacity()
+      : 0
+  "
+></svg:circle>
+<svg:g
+  appKeyLabel
+  [x]="center().x"
+  [y]="center().y"
+  [highlightKeyCombination]="highlightKeyCombination()"
+  [labels]="keyLabelMap()[positionCodeMap().c]"
+  [fontSize]="fontSize()"
+></svg:g>

@@ -1,0 +1,46 @@
+/* Global styles */
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./assets/material-symbols-rounded.min.woff2') format('woff2');
+}
+
+/* Sirius theme — the sky's brightest star, spectral type A1V (blue-white).
+   Deep night-sky navy base, blue-white azure accent, warm amber "twinkle" for
+   live key presses. Tweak the whole theme from here. */
+:root {
+  --sirius-bg: #0a0e20;
+  --sirius-accent: #5aa0ff;
+  --sirius-accent-ink: #06182f;
+  --sirius-pressed: #ffb454;
+}
+
+/* Material Symbols icon glyph for HTML buttons (ligatures work in HTML, unlike
+   SVG <text>). The glyph names must be included in the subset — see
+   tools/subset-icon-font.mjs (UI_ICONS). */
+.material-symbol {
+  font-family: 'Material Symbols Rounded';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100vh;
+  /* Transparent so the app root controls opacity (opaque normally, see-through
+     in passthrough overlay mode). */
+  background: transparent;
+  color: #e6ebff;
+}

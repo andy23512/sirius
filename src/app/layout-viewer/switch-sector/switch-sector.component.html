@@ -1,0 +1,30 @@
+<svg:path
+  [attr.d]="sectorPath()"
+  fill="transparent"
+  stroke="#ffffff"
+  [attr.stroke-width]="strokeWidth()"
+/>
+<svg:path
+  style="fill: var(--sirius-accent)"
+  [attr.d]="sectorPath() + ' Z'"
+  [attr.opacity]="
+    highlightKeyCombination()?.positionCodes?.includes(positionCode())
+      ? highlightOpacity()
+      : 0
+  "
+/>
+<svg:path
+  style="fill: var(--sirius-pressed)"
+  [attr.d]="sectorPath() + ' Z'"
+  [attr.opacity]="
+    secondaryHighlightPositions().includes(positionCode()) ? highlightOpacity() : 0
+  "
+/>
+<svg:g
+  appKeyLabel
+  [x]="textX()"
+  [y]="textY()"
+  [fontSize]="fontSize()"
+  [highlightKeyCombination]="highlightKeyCombination()"
+  [labels]="keyLabel()"
+></svg:g>

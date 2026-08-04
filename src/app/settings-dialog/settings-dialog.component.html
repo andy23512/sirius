@@ -1,0 +1,101 @@
+<div class="backdrop" (click)="close()"></div>
+<div class="dialog" role="dialog" aria-label="Settings">
+  <header class="dialog__header">
+    <h2>Settings</h2>
+    <button type="button" class="icon-btn" (click)="close()" aria-label="Close">
+      <span class="material-symbol">close</span>
+    </button>
+  </header>
+
+  <div class="dialog__body">
+    <!-- Device layout -->
+    <label class="field">
+      <span class="field__label">Device layout</span>
+      <select
+        class="select"
+        [ngModel]="selectedDeviceLayoutId()"
+        (ngModelChange)="setSelectedDeviceLayoutId($event)"
+      >
+        @for (deviceLayout of deviceLayouts(); track deviceLayout.id) {
+          <option [ngValue]="deviceLayout.id">{{ deviceLayout.name }}</option>
+        }
+      </select>
+    </label>
+
+    <!-- Upload device layout -->
+    <div class="field">
+      <span class="field__label">Upload device layout</span>
+      <label class="button">
+        Choose file…
+        <input
+          type="file"
+          accept="application/json,.json"
+          hidden
+          (change)="onFileSelected($event)"
+        />
+      </label>
+      <span class="field__hint">CharaChorder backup or a bare layout JSON.</span>
+      @if (uploadError(); as error) {
+        <span class="field__error">{{ error }}</span>
+      }
+    </div>
+
+    <!-- OS keyboard layout -->
+    <div class="field">
+      <span class="field__label">OS keyboard layout</span>
+      <input
+        class="search"
+        type="search"
+        placeholder="Search layouts…"
+        [ngModel]="keyboardLayoutSearchQuery()"
+        (ngModelChange)="keyboardLayoutSearchQuery.set($event)"
+      />
+      <div class="os-row">
+        <select
+          class="select"
+          [ngModel]="selectedKeyboardLayoutId()"
+          (ngModelChange)="setSelectedKeyboardLayoutId($event)"
+        >
+          @for (
+            keyboardLayout of filteredKeyboardLayouts();
+            track keyboardLayout.id
+          ) {
+            <option [ngValue]="keyboardLayout.id">{{ keyboardLayout.name }}</option>
+          }
+        </select>
+        @if (keyboardLayout()?.reference) {
+          <a
+            class="icon-btn"
+            [href]="keyboardLayout()!.reference"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open layout reference"
+            ><span class="material-symbol">open_in_new</span></a
+          >
+        }
+        <button
+          type="button"
+          class="icon-btn"
+          (click)="resetKeyboardLayout()"
+          [disabled]="selectedKeyboardLayoutId() === 'us'"
+          title="Reset to US"
+        >
+          <span class="material-symbol">restart_alt</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Display options -->
+    <div class="field field--row">
+      <span class="field__label">3rd thumb switch (CharaChorder 3D)</span>
+      <button
+        type="button"
+        class="toggle"
+        [class.toggle--active]="showThumb3Switch()"
+        (click)="toggleThumb3Switch()"
+      >
+        {{ showThumb3Switch() ? 'On' : 'Off' }}
+      </button>
+    </div>
+  </div>
+</div>

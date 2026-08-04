@@ -1,0 +1,100 @@
+{
+  "name": "sirius",
+  "version": "0.0.0",
+  "description": "A cross-platform desktop layout viewer & key tester for CharaChorder 3D devices",
+  "author": "andy23512",
+  "license": "MIT",
+  "main": "electron/main.js",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
+    "electron": "electron .",
+    "electron:dev": "concurrently -k -n ng,electron -c blue,green \"ng serve\" \"wait-on tcp:4200 && cross-env NODE_ENV=development electron .\"",
+    "electron:build": "ng build && electron .",
+    "subset-icon-font": "node tools/subset-icon-font.mjs",
+    "make-icon": "node tools/make-app-icon.mjs",
+    "dist": "ng build && electron-builder",
+    "dist:dir": "ng build && electron-builder --dir"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "build": {
+    "appId": "com.andy23512.sirius",
+    "productName": "Sirius",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "dist/sirius/browser/**/*"
+    ],
+    "asarUnpack": [
+      "node_modules/uiohook-napi/**/*",
+      "node_modules/node-gyp-build/**/*"
+    ],
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.utilities",
+      "identity": null
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Utility"
+    }
+  },
+  "dependencies": {
+    "uiohook-napi": "^1.5.5"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.3.32",
+    "@angular/cli": "^20.3.32",
+    "@angular/common": "^20.3.0",
+    "@angular/compiler": "^20.3.0",
+    "@angular/compiler-cli": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@angular/forms": "^20.3.0",
+    "@angular/platform-browser": "^20.3.0",
+    "@angular/router": "^20.3.0",
+    "@types/fontkit": "^2.0.9",
+    "@types/jasmine": "~5.1.0",
+    "@web-alchemy/fonttools": "^1.4.0",
+    "concurrently": "^10.0.4",
+    "cross-env": "^10.1.0",
+    "electron": "^43.2.0",
+    "electron-builder": "^26.15.3",
+    "font-logos": "^1.4.0",
+    "fontkit": "^2.0.4",
+    "jasmine-core": "~5.9.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "rxjs": "~7.8.0",
+    "tangent-cc-lib": "^0.0.55",
+    "tslib": "^2.3.0",
+    "typescript": "~5.9.2",
+    "ua-parser-js": "^2.0.10",
+    "wait-on": "^9.1.0",
+    "zone.js": "~0.15.0"
+  }
+}

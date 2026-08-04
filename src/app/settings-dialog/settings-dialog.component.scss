@@ -1,0 +1,151 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.dialog {
+  position: relative;
+  width: min(440px, calc(100vw - 40px));
+  max-height: calc(100vh - 60px);
+  overflow: auto;
+  background: #12172e;
+  border: 1px solid #313a63;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  color: #e6ebff;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid #232a4a;
+
+    h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+  }
+
+  &__body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &--row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #8b95c9;
+  }
+
+  &__hint {
+    font-size: 0.75rem;
+    color: #6b76a8;
+  }
+
+  &__error {
+    font-size: 0.8rem;
+    color: #ff9bb3;
+  }
+}
+
+.os-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.select,
+.search {
+  width: 100%;
+  background: #0d1226;
+  color: #e6ebff;
+  border: 1px solid #313a63;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  background: #1c2340;
+  color: #e6ebff;
+  border: 1px solid #313a63;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &:hover {
+    background: #26305a;
+  }
+}
+
+.toggle {
+  background: #1c2340;
+  color: #cdd5f5;
+  border: 1px solid #313a63;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &--active {
+    background: var(--sirius-accent);
+    color: var(--sirius-accent-ink);
+    font-weight: 700;
+    border-color: var(--sirius-accent);
+  }
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  background: #1c2340;
+  color: #cdd5f5;
+  border: 1px solid #313a63;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background: #26305a;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
