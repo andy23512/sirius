@@ -40,6 +40,7 @@
   "build": {
     "appId": "com.andy23512.sirius",
     "productName": "Sirius",
+    "npmRebuild": false,
     "directories": {
       "output": "release",
       "buildResources": "build"
