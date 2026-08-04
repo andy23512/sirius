@@ -48,10 +48,14 @@
       "node_modules/uiohook-napi/**/*",
       "node_modules/node-gyp-build/**/*"
     ],
+    "afterSign": "build/notarize.cjs",
     "mac": {
       "target": "dmg",
       "category": "public.app-category.utilities",
-      "identity": null
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
     },
     "win": {
       "target": "nsis"
@@ -74,6 +78,7 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@electron/notarize": "^3.1.1",
     "@types/fontkit": "^2.0.9",
     "@types/jasmine": "~5.1.0",
     "@web-alchemy/fonttools": "^1.4.0",

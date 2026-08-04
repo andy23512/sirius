@@ -2,6 +2,7 @@
 
 const path = require('node:path');
 const zlib = require('node:zlib');
+const fs = require('node:fs');
 const {
   app,
   BrowserWindow,
@@ -12,6 +13,7 @@ const {
   nativeImage,
   systemPreferences,
   shell,
+  screen,
 } = require('electron');
 const { uIOhook, UiohookKey } = require('uiohook-napi');
 
@@ -23,6 +25,60 @@ const windowState = {
   alwaysOnTop: false,
   passthrough: false,
 };
+
+// --- Persisted state (window bounds + framed/pin), stored in userData ---
+// passthrough is intentionally NOT persisted — never launch into a hidden,
+// click-through overlay.
+let persisted = {};
+let saveTimer = null;
+
+function stateFilePath() {
+  return path.join(app.getPath('userData'), 'window-state.json');
+}
+function loadPersisted() {
+  try {
+    return JSON.parse(fs.readFileSync(stateFilePath(), 'utf8')) || {};
+  } catch {
+    return {};
+  }
+}
+function savePersisted() {
+  const bounds =
+    mainWindow && !mainWindow.isDestroyed()
+      ? mainWindow.getBounds()
+      : persisted.bounds;
+  persisted = { bounds, framed: windowState.framed, alwaysOnTop: windowState.alwaysOnTop };
+  try {
+    fs.writeFileSync(stateFilePath(), JSON.stringify(persisted));
+  } catch {
+    // Best-effort; ignore write failures.
+  }
+}
+function savePersistedDebounced() {
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+  }
+  saveTimer = setTimeout(savePersisted, 500);
+}
+
+/** Saved bounds if still visible on some display, else sensible defaults. */
+function getWindowBounds() {
+  const def = { width: 960, height: 700 };
+  const b = persisted.bounds;
+  if (!b || typeof b.width !== 'number' || typeof b.x !== 'number') {
+    return def;
+  }
+  const onScreen = screen.getAllDisplays().some((d) => {
+    const a = d.workArea;
+    return (
+      b.x < a.x + a.width &&
+      b.x + b.width > a.x &&
+      b.y < a.y + a.height &&
+      b.y + b.height > a.y
+    );
+  });
+  return onScreen ? b : def;
+}
 
 // Build a reverse lookup: keycode -> human-readable name (e.g. 30 -> "A").
 const keycodeToName = Object.create(null);
@@ -73,9 +129,11 @@ let mainWindow = null;
 
 function createWindow() {
   const framed = windowState.framed;
+  const bounds = getWindowBounds();
   mainWindow = new BrowserWindow({
-    width: 960,
-    height: 700,
+    width: bounds.width,
+    height: bounds.height,
+    ...(typeof bounds.x === 'number' ? { x: bounds.x, y: bounds.y } : {}),
     title: 'Sirius',
     // Frameless mode is transparent so the renderer can paint an opaque
     // background normally and go fully transparent (only the layout floats) in
@@ -111,6 +169,10 @@ function createWindow() {
     sendToRenderer('accessibility-status', accessibilityStatus());
   });
 
+  // Persist position/size as the user moves/resizes the window.
+  mainWindow.on('move', savePersistedDebounced);
+  mainWindow.on('resize', savePersistedDebounced);
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -141,6 +203,7 @@ function applyFramed(framed) {
     old.destroy();
   }
   updateTrayMenu();
+  savePersisted();
 }
 
 function sendToRenderer(channel, payload) {
@@ -157,14 +220,27 @@ function applyAlwaysOnTop(on) {
   }
   sendToRenderer('window-state', { ...windowState });
   updateTrayMenu();
+  savePersisted();
 }
+
+// Track whether passthrough auto-enabled pin, so we can restore on exit.
+let autoPinnedForPassthrough = false;
 
 function applyPassthrough(on) {
   // Passthrough needs a transparent (frameless) window.
-  windowState.passthrough = windowState.framed ? false : Boolean(on);
+  const next = windowState.framed ? false : Boolean(on);
+  windowState.passthrough = next;
   if (mainWindow && !mainWindow.isDestroyed()) {
     // forward:true keeps move events flowing so a global shortcut can restore it.
-    mainWindow.setIgnoreMouseEvents(windowState.passthrough, { forward: true });
+    mainWindow.setIgnoreMouseEvents(next, { forward: true });
+  }
+  // Auto-pin so the overlay floats above other windows; restore on exit.
+  if (next && !windowState.alwaysOnTop) {
+    autoPinnedForPassthrough = true;
+    applyAlwaysOnTop(true);
+  } else if (!next && autoPinnedForPassthrough) {
+    autoPinnedForPassthrough = false;
+    applyAlwaysOnTop(false);
   }
   sendToRenderer('window-state', { ...windowState });
   updateTrayMenu();
@@ -447,6 +523,12 @@ ipcMain.handle('accessibility-get-status', () => accessibilityStatus());
 ipcMain.on('accessibility-open-settings', () => openAccessibilitySettings());
 
 app.whenReady().then(() => {
+  // Restore persisted window state (bounds + framed + pin). passthrough is never
+  // restored.
+  persisted = loadPersisted();
+  windowState.framed = Boolean(persisted.framed);
+  windowState.alwaysOnTop = Boolean(persisted.alwaysOnTop);
+
   createWindow();
   createTray();
   startHook();
@@ -473,6 +555,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('before-quit', () => {
+  savePersisted();
   stopHook();
   globalShortcut.unregisterAll();
   if (accessibilityPoll) {

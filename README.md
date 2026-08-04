@@ -1,5 +1,7 @@
 # Sirius
 
+[![CI](https://github.com/andy23512/sirius/actions/workflows/ci.yml/badge.svg)](https://github.com/andy23512/sirius/actions/workflows/ci.yml)
+
 A cross-platform desktop key tester for CharaChorder 3D devices, built with
 **Angular 20** + **Electron**. It has two parts:
 
@@ -45,6 +47,12 @@ The Electron window starts frameless + transparent (`electron/main.js`); the
 renderer paints an opaque background in normal mode and goes fully transparent in
 passthrough. The header is the drag region. Window state lives in the main process
 and is exposed to the renderer via `window.sirius.windowControls` (`WindowService`).
+
+The **window position/size and the pin/frame state are persisted** across launches
+(`window-state.json` in the app's userData; passthrough is never restored, and
+off-screen bounds fall back to defaults). Entering passthrough **auto-enables
+pin-to-front** so the overlay floats above other windows, and exiting restores the
+previous pin state.
 
 ### Tray icon
 
@@ -248,12 +256,43 @@ Notes:
   dependency is `uiohook-napi`** — everything else lives in `devDependencies`, so
   electron-builder ships a lean app. The native module is unpacked from the asar
   (`asarUnpack`) so its `.node` binary can load.
-- macOS builds are **unsigned** (`mac.identity: null`). To distribute outside your
-  own machine you'll want an Apple Developer ID for signing + notarization
-  (otherwise Gatekeeper blocks it). The app icon is derived from
-  `build/icon.png` (`npm run make-icon`, a Sirius blue-white star).
+- The app icon is derived from `build/icon.png` (`npm run make-icon`, a Sirius
+  blue-white star).
 - Because the packaged app's identity is **Sirius** (not `Electron`), it appears as
   “Sirius” in System Settings → Accessibility — grant it there for global capture.
+
+### Signing & notarization (macOS)
+
+The mac config is **ready to sign + notarize**, and gracefully produces an
+**unsigned** app when no credentials are present (as above — good for local
+testing / CI). To distribute outside your own machine you must sign + notarize,
+or Gatekeeper blocks the app. You need an **Apple Developer account** and a
+**Developer ID Application** certificate in your keychain (or via `CSC_LINK` /
+`CSC_KEY_PASSWORD`).
+
+The config already sets `hardenedRuntime`, `build/entitlements.mac.plist` (JIT +
+`disable-library-validation` so the `uiohook-napi` `.node` loads), and an
+`afterSign` hook (`build/notarize.cjs`) that notarizes **only** when Apple
+credentials are in the environment. Provide **one** of:
+
+```bash
+# App Store Connect API key (recommended)
+export APPLE_API_KEY=/path/to/AuthKey_XXXX.p8
+export APPLE_API_KEY_ID=XXXXXXXXXX
+export APPLE_API_ISSUER=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+# …or Apple ID + app-specific password
+export APPLE_ID=you@example.com
+export APPLE_APP_SPECIFIC_PASSWORD=xxxx-xxxx-xxxx-xxxx
+export APPLE_TEAM_ID=XXXXXXXXXX
+
+npm run dist   # signs, notarizes, staples, and builds the .dmg
+```
+
+Verify afterward with `spctl -a -vvv "release/mac-arm64/Sirius.app"` and
+`xcrun stapler validate`. For CI signing, put the cert (`CSC_LINK` base64 +
+`CSC_KEY_PASSWORD`) and the Apple credentials above into repository secrets and
+run `npm run dist` on a `macos-latest` runner.
 
 ## macOS permission
 
