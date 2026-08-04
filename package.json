@@ -4,6 +4,14 @@
   "description": "A cross-platform desktop layout viewer & key tester for CharaChorder 3D devices",
   "author": "andy23512",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andy23512/sirius.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andy23512/sirius/issues"
+  },
+  "homepage": "https://github.com/andy23512/sirius#readme",
   "main": "electron/main.js",
   "scripts": {
     "ng": "ng",

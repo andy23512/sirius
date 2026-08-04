@@ -357,3 +357,11 @@ and the banner never shows.
 | `key`     | `A`            | Name derived from the keycode      |
 | `keycode` | `30`           | Raw uiohook keycode (physical key) |
 | modifiers | `Ctrl + Shift` | shift / ctrl / alt / meta state    |
+
+## License
+
+[MIT](LICENSE) © andy23512.
+
+This is an **unofficial** tool and is not affiliated with or endorsed by
+CharaChorder. The CharaChorder device data comes from
+[`tangent-cc-lib`](https://www.npmjs.com/package/tangent-cc-lib).
