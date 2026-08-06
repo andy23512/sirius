@@ -94,6 +94,19 @@ export class LayoutViewerComponent {
   );
 
   constructor() {
+    // Keep the selected layer valid when the device layout changes to one with
+    // fewer layers (e.g. switching from a 4-layer to a 3-layer device layout) —
+    // otherwise currentLayer keeps pointing at a layer that no longer exists
+    // and every layer-specific key label stops rendering.
+    effect(() => {
+      const layers = this.layers();
+      untracked(() => {
+        if (!layers.includes(this.currentLayer())) {
+          this.currentLayer.set(layers[0] ?? Layer.Primary);
+        }
+      });
+    });
+
     // Follow typing: when a pressed key isn't on the current layer, switch to a
     // layer that produces it (e.g. a number that only lives on the 2nd layer).
     effect(() => {

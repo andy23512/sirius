@@ -24,6 +24,18 @@ function fixtureLayout(): DeviceLayout {
   };
 }
 
+/** Layout with only a primary and secondary layer (no tertiary/quaternary). */
+function fixtureLayoutTwoLayers(): DeviceLayout {
+  const primary = new Array(90).fill(0);
+  const secondary = new Array(90).fill(0);
+  primary[5] = wsk('KeyA');
+  return {
+    id: 'fixture-two-layers',
+    name: 'fixture-two-layers',
+    layout: [primary, secondary] as unknown as DeviceLayout['layout'],
+  };
+}
+
 describe('LayoutViewerComponent — modifier & layer switching', () => {
   let fixture: ComponentFixture<LayoutViewerComponent>;
   let component: LayoutViewerComponent;
@@ -85,6 +97,19 @@ describe('LayoutViewerComponent — modifier & layer switching', () => {
     // KeyA is on the primary layer -> switch back.
     keys.lastKeyDown.set({ code: 'KeyA', seq: 2 });
     fixture.detectChanges();
+    expect(component.currentLayer()).toBe(Layer.Primary);
+  });
+
+  it('clamps the current layer when switching to a device layout with fewer layers', () => {
+    deviceLayouts.addLayouts([fixtureLayout()]); // 3 layers
+    fixture.detectChanges();
+    component.setLayer(Layer.Tertiary);
+    fixture.detectChanges();
+    expect(component.currentLayer()).toBe(Layer.Tertiary);
+
+    deviceLayouts.addLayouts([fixtureLayoutTwoLayers()]); // 2 layers, selected
+    fixture.detectChanges();
+    expect(component.layers()).toEqual([Layer.Primary, Layer.Secondary]);
     expect(component.currentLayer()).toBe(Layer.Primary);
   });
 });

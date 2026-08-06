@@ -450,8 +450,10 @@ function createTray() {
 
 /**
  * Normalize a raw uiohook keyboard event into a serializable shape and forward
- * it to the renderer + stdout. This fires for keystrokes in ANY application,
- * not just this window.
+ * it to the renderer. This fires for keystrokes in ANY application, not just
+ * this window — never log the resolved key identity here, since that would
+ * echo keystrokes typed in other apps (e.g. passwords) to this process's
+ * stdout/log files.
  */
 function handleKey(type, event) {
   const info = {
@@ -465,12 +467,6 @@ function handleKey(type, event) {
     metaKey: Boolean(event.metaKey),
     time: event.time,
   };
-
-  // Print the obtainable info (character/name and code) to the main-process console.
-  console.log(
-    `[${info.type}] key=${info.key} keycode=${info.keycode}` +
-      ` mods={shift:${info.shiftKey}, ctrl:${info.ctrlKey}, alt:${info.altKey}, meta:${info.metaKey}}`,
-  );
 
   sendToRenderer('global-key', info);
 }
