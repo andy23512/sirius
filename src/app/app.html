@@ -14,29 +14,28 @@
       >
         <span class="material-symbol">settings</span>
       </button>
-      <button
-        type="button"
-        class="tool-btn"
-        [class.tool-btn--active]="alwaysOnTop()"
-        (click)="togglePin()"
-        [disabled]="!windowControlsAvailable()"
-        title="Pin to front (always on top)"
-        aria-label="Pin to front"
-      >
-        <span class="material-symbol">push_pin</span>
-      </button>
-      <button
-        type="button"
-        class="tool-btn"
-        [class.tool-btn--active]="passthrough()"
-        (click)="togglePassthrough()"
-        [disabled]="framed()"
-        title="Passthrough overlay (transparent, click-through — ⌘⇧O to exit). Needs frameless window."
-        aria-label="Passthrough overlay"
-      >
-        <span class="material-symbol">visibility</span>
-      </button>
       @if (windowControlsAvailable()) {
+        <button
+          type="button"
+          class="tool-btn"
+          [class.tool-btn--active]="alwaysOnTop()"
+          (click)="togglePin()"
+          title="Pin to front (always on top)"
+          aria-label="Pin to front"
+        >
+          <span class="material-symbol">push_pin</span>
+        </button>
+        <button
+          type="button"
+          class="tool-btn"
+          [class.tool-btn--active]="passthrough()"
+          (click)="togglePassthrough()"
+          [disabled]="framed()"
+          title="Passthrough overlay (transparent, click-through — ⌘⇧O to exit). Needs frameless window."
+          aria-label="Passthrough overlay"
+        >
+          <span class="material-symbol">visibility</span>
+        </button>
         <button
           type="button"
           class="tool-btn"

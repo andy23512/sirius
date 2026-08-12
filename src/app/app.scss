@@ -109,7 +109,11 @@ h1 {
 .app__viewer {
   flex: 1;
   min-height: 0;
-  display: block;
+  // No `display` here — layout-viewer's own `:host { display: flex }` sets it.
+  // Setting it here too ties on specificity with that :host rule and can win
+  // the cascade, silently forcing the viewer back to block and breaking its
+  // internal flex sizing (the stage overflows to the SVG's intrinsic aspect
+  // ratio instead of fitting the available height).
 }
 
 /* Floating overlay controls (drag grip + exit), kept interactive while the rest

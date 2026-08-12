@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/andy23512/sirius/actions/workflows/ci.yml/badge.svg)](https://github.com/andy23512/sirius/actions/workflows/ci.yml)
 [![Web trial](https://github.com/andy23512/sirius/actions/workflows/pages.yml/badge.svg)](https://andy23512.github.io/sirius/)
+[![Live demo](https://img.shields.io/badge/demo-andy23512.github.io%2Fsirius-5aa0ff)](https://andy23512.github.io/sirius/)
 [![Latest release](https://img.shields.io/github/v/release/andy23512/sirius)](https://github.com/andy23512/sirius/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/andy23512/sirius/total)](https://github.com/andy23512/sirius/releases)
 [![License: MIT](https://img.shields.io/github/license/andy23512/sirius)](LICENSE)
