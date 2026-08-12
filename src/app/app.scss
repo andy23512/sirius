@@ -27,7 +27,8 @@
 
     .app__header,
     .keylog,
-    .a11y {
+    .a11y,
+    .trial {
       visibility: hidden;
       pointer-events: none;
     }
@@ -201,7 +202,8 @@ h1 {
   }
 }
 
-.a11y {
+.a11y,
+.trial {
   flex: none;
   display: flex;
   align-items: center;
@@ -226,6 +228,8 @@ h1 {
   padding: 6px 14px;
   font-size: 0.85rem;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 
   &:hover:not(:disabled) {
     background: #26305a;

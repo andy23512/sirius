@@ -74,6 +74,24 @@
     </div>
   </header>
 
+  @if (!connected()) {
+    <div class="banner banner--warn trial">
+      <span>
+        <strong>Browser trial</strong> — key capture only works in this tab while it's focused, and
+        can't see keys pressed in other apps or windows. Download the desktop app for global key
+        capture.
+      </span>
+      <a
+        class="btn"
+        href="https://github.com/andy23512/sirius/releases/latest"
+        target="_blank"
+        rel="noopener"
+      >
+        Download desktop app
+      </a>
+    </div>
+  }
+
   @if (accessibilityBlocking()) {
     <div class="banner banner--error a11y">
       <span>
@@ -95,12 +113,6 @@
         <span class="keylog__count keylog__count--off">— local keys only</span>
       }
     </summary>
-    @if (!connected()) {
-      <div class="banner banner--warn">
-        Electron bridge offline — capturing only keys pressed in this window. Run
-        <code>npm run electron:dev</code> to capture global keys (any app).
-      </div>
-    }
     <div class="keylog__toolbar">
       <button type="button" class="btn" (click)="clear()" [disabled]="events().length === 0">
         Clear

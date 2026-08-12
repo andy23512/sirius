@@ -1,12 +1,18 @@
 # Sirius
 
 [![CI](https://github.com/andy23512/sirius/actions/workflows/ci.yml/badge.svg)](https://github.com/andy23512/sirius/actions/workflows/ci.yml)
+[![Web trial](https://github.com/andy23512/sirius/actions/workflows/pages.yml/badge.svg)](https://andy23512.github.io/sirius/)
 [![Latest release](https://img.shields.io/github/v/release/andy23512/sirius)](https://github.com/andy23512/sirius/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/andy23512/sirius/total)](https://github.com/andy23512/sirius/releases)
 [![License: MIT](https://img.shields.io/github/license/andy23512/sirius)](LICENSE)
 ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
 
 ![Sirius — the CharaChorder 3D layout with pressed keys lit up](docs/screenshot.png)
+
+**[Try the web trial →](https://andy23512.github.io/sirius/)** — the layout viewer and
+key tester run in any browser, no install needed. It's limited to keys pressed while
+the tab is focused; the [desktop app](https://github.com/andy23512/sirius/releases/latest)
+adds global key capture (any app, any window).
 
 A cross-platform desktop key tester for CharaChorder 3D devices, built with
 **Angular 20** + **Electron**. It has two parts:
@@ -25,8 +31,10 @@ A cross-platform desktop key tester for CharaChorder 3D devices, built with
    keycode, DOM code, active modifiers). Collapsible panel at the bottom.
 
 Both parts share a single `GlobalKeyService`. When the Electron bridge is present
-it captures keys from any application; in a plain browser it falls back to DOM key
-events (this window only) — enough to try the live highlighting during development.
+it captures keys from any application; in a plain browser (including the
+[web trial](https://andy23512.github.io/sirius/)) it falls back to DOM key events
+(this tab only, while focused) — enough to try the live highlighting, but not a
+substitute for the desktop app's global capture.
 
 ## Desktop window modes
 
