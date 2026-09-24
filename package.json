@@ -28,6 +28,7 @@
     "electron:build": "ng build && electron .",
     "subset-icon-font": "node tools/subset-icon-font.mjs",
     "make-icon": "node tools/make-app-icon.mjs",
+    "make-favicon": "node tools/make-favicon.mjs",
     "screenshot": "ng build && electron tools/screenshot.cjs",
     "dist": "ng build && electron-builder",
     "dist:dir": "ng build && electron-builder --dir"
