@@ -90,6 +90,7 @@ export function buildKeyLabelMap(
                 layer,
                 shiftKey: false,
                 altGraphKey: true,
+                isDeadKey,
               },
               {
                 type: KeyLabelType.String,

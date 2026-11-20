@@ -221,15 +221,12 @@ describe('buildKeyLabelMap', () => {
       expect(labels[0].title).toBe('Dead key: ^');
     });
 
-    // Current behavior, probably not meant: on the Shift+AltGr output, the
-    // label for the no-Shift state is never marked as a dead key (the field
-    // is left out), although its title says "Dead key".
-    it('forgets to mark the first Shift+AltGr label as a dead key (known gap)', () => {
+    it('marks a dead key on both Shift+AltGr labels', () => {
       const labels = labelsAt0(wsk('KeyS', true));
       expect(labels.map((l) => [l.c, l.shiftKey, l.altGraphKey, isDead(l), l.title])).toEqual([
         ['S', false, false, false, 'Character: S'],
         ['S', true, false, false, 'Character: S'],
-        ['ß', false, true, undefined, 'Dead key: ß'],
+        ['ß', false, true, true, 'Dead key: ß'],
         ['ß', true, true, true, 'Dead key: ß'],
       ]);
     });
