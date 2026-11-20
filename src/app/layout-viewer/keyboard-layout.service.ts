@@ -23,7 +23,11 @@ const KEYBOARD_LAYOUTS: KeyboardLayout[] = [
 @Injectable({ providedIn: 'root' })
 export class KeyboardLayoutService {
   readonly entities = KEYBOARD_LAYOUTS;
-  readonly selectedId = signal<string>(localStorage.getItem(SELECTED_KEY) ?? DEFAULT_ID);
+  // A saved id that no longer exists (e.g. a layout renamed by a library update)
+  // falls back to the default instead of leaving nothing selected.
+  readonly selectedId = signal<string>(
+    savedKeyboardLayoutId(this.entities.map((k) => k.id)) ?? DEFAULT_ID,
+  );
 
   readonly selectedEntity = computed<KeyboardLayout | null>(
     () => this.entities.find((k) => k.id === this.selectedId()) ?? null,
@@ -54,4 +58,9 @@ export class KeyboardLayoutService {
   get defaultId(): string {
     return DEFAULT_ID;
   }
+}
+
+function savedKeyboardLayoutId(knownIds: string[]): string | null {
+  const saved = localStorage.getItem(SELECTED_KEY);
+  return saved !== null && knownIds.includes(saved) ? saved : null;
 }

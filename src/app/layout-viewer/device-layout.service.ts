@@ -28,8 +28,11 @@ const BUILT_IN_DEVICE_LAYOUTS: DeviceLayout[] = [
 @Injectable({ providedIn: 'root' })
 export class DeviceLayoutService {
   private readonly uploaded = signal<DeviceLayout[]>(readUploaded());
+  // A saved id that no longer exists (e.g. an uploaded layout that was lost)
+  // falls back to the default instead of leaving nothing selected.
   readonly selectedId = signal<string>(
-    localStorage.getItem(SELECTED_KEY) ?? DEFAULT_DEVICE_LAYOUT.id,
+    savedDeviceLayoutId([...BUILT_IN_DEVICE_LAYOUTS, ...this.uploaded()]) ??
+      DEFAULT_DEVICE_LAYOUT.id,
   );
 
   readonly entities = computed<DeviceLayout[]>(() => [
@@ -83,4 +86,9 @@ function readUploaded(): DeviceLayout[] {
   } catch {
     return [];
   }
+}
+
+function savedDeviceLayoutId(known: DeviceLayout[]): string | null {
+  const saved = localStorage.getItem(SELECTED_KEY);
+  return saved !== null && known.some((d) => d.id === saved) ? saved : null;
 }

@@ -74,11 +74,30 @@ describe('DeviceLayoutService', () => {
       expect(create().selectedEntity()?.id).toBe('cclite-default');
     });
 
-    // Current behavior: an id that matches nothing is kept, and nothing is selected.
-    it('has nothing selected for an unknown id, with zero layers', () => {
+    it('falls back to the default layout when the saved id is unknown, and saves that', () => {
       localStorage.setItem(SELECTED_KEY, 'gone');
       const service = create();
-      expect(service.selectedId()).toBe('gone');
+      expect(service.selectedId()).toBe('default');
+      expect(service.selectedEntity()?.id).toBe('default');
+      expect(service.selectedEntityLayerNumber()).toBe(3);
+      expect(localStorage.getItem(SELECTED_KEY)).toBe('default');
+    });
+
+    it('keeps a saved id that is an uploaded layout', () => {
+      localStorage.setItem(UPLOADED_KEY, JSON.stringify([layout('mine')]));
+      localStorage.setItem(SELECTED_KEY, 'mine');
+      expect(create().selectedId()).toBe('mine');
+    });
+
+    it('falls back when the saved id was an uploaded layout that is gone', () => {
+      localStorage.setItem(SELECTED_KEY, 'mine');
+      expect(create().selectedId()).toBe('default');
+    });
+
+    // Only the saved value is checked; picking an id by hand is not.
+    it('still takes an unknown id when it is set by hand, with nothing selected', () => {
+      const service = create();
+      service.setSelectedId('gone');
       expect(service.selectedEntity()).toBeNull();
       expect(service.selectedEntityLayerNumber()).toBe(0);
     });

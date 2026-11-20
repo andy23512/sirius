@@ -176,10 +176,9 @@ describe('KeyLabelComponent', () => {
       expect(t.style.fontSize).toBe('80px');
     });
 
-    // Current behavior: the feature name is written without quotes, which is
-    // not valid CSS, so the browser drops it. Icons still show as glyphs
-    // because ligatures are on by default.
-    it('asks for the liga feature without quotes, which the browser ignores (known gap)', () => {
+    // The feature name must be quoted to be valid CSS; unquoted, the browser
+    // drops the whole declaration.
+    it('asks for the liga feature in a form the browser accepts', () => {
       const label = {
         type: KeyLabelType.Icon,
         c: 'shift',
@@ -188,9 +187,9 @@ describe('KeyLabelComponent', () => {
         shiftKey: false,
         altGraphKey: false,
       } as unknown as KeyLabel;
-      expect(component.render(label).fontFeature).toBe('liga');
+      expect(component.render(label).fontFeature).toBe('"liga"');
       const t = style([label]);
-      expect(t.style.fontFeatureSettings).toBe('');
+      expect(t.style.fontFeatureSettings).toBe('"liga"');
       expect(t.style.fontSize).toBe('80px');
     });
 

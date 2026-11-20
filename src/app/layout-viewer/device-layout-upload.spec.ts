@@ -86,8 +86,10 @@ describe('parseDeviceLayoutFile', () => {
       );
     });
 
-    it('fails on a JSON null with a TypeError, not a message', () => {
-      expect(() => parseDeviceLayoutFile('a.json', 'null')).toThrowError(TypeError);
+    it('says there is no layout for a JSON null, with the same message', () => {
+      expect(() => parseDeviceLayoutFile('a.json', 'null')).toThrowError(
+        'No CharaChorder layout found in this file.',
+      );
     });
   });
 

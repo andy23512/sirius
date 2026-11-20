@@ -62,12 +62,18 @@ describe('KeyboardLayoutService', () => {
     expect(localStorage.getItem(KEY)).toBe('us');
   });
 
-  // Current behavior: a saved id that is no longer in the list is kept, and
-  // the selected layout is null until another one is picked.
-  it('has no selected layout for an unknown id, and keeps the id', () => {
+  it('falls back to US when the saved id is unknown, and saves that', () => {
     localStorage.setItem(KEY, 'no-such-layout');
     const service = create();
-    expect(service.selectedId()).toBe('no-such-layout');
+    expect(service.selectedId()).toBe('us');
+    expect(service.selectedEntity()?.id).toBe('us');
+    expect(localStorage.getItem(KEY)).toBe('us');
+  });
+
+  // Only the saved value is checked; picking an id by hand is not.
+  it('still takes an unknown id when it is set by hand, with nothing selected', () => {
+    const service = create();
+    service.setSelectedId('no-such-layout');
     expect(service.selectedEntity()).toBeNull();
     expect(service.hasDeadKey()).toBeFalse();
   });

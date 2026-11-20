@@ -17,6 +17,10 @@ export function parseDeviceLayoutFile(fileName: string, text: string): DeviceLay
     throw new Error('File is not valid JSON.');
   }
 
+  if (typeof data !== 'object' || data === null) {
+    throw new Error('No CharaChorder layout found in this file.');
+  }
+
   const record = data as { history?: unknown; layout?: unknown };
   let layoutItem: { layout?: unknown } | null = null;
 

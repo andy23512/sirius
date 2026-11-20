@@ -73,7 +73,7 @@ export class KeyLabelComponent {
         return {
           text: label.c,
           fontFamily: ICON_FONT,
-          fontFeature: 'liga',
+          fontFeature: '"liga"',
           fontSize: base * 0.8,
         };
     }
