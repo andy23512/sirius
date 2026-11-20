@@ -184,3 +184,179 @@ describe('liveModifiers', () => {
     expect(mods.altGraph).toBeFalse();
   });
 });
+
+function layoutOf(layers: Record<number, number>[]): DeviceLayout {
+  return {
+    id: 'x',
+    name: 'x',
+    layout: layers.map((entries) => {
+      const layer = emptyLayer();
+      for (const [position, code] of Object.entries(entries)) {
+        layer[Number(position)] = code;
+      }
+      return layer;
+    }) as unknown as DeviceLayout['layout'],
+  };
+}
+
+describe('buildCodeToPositions, more cases', () => {
+  it('lists each position once, even when it has the same key on every layer', () => {
+    const map = buildCodeToPositions(
+      layoutOf([{ 7: CODE.KeyA }, { 7: CODE.KeyA }, { 7: CODE.KeyA }]),
+    );
+    expect(map['KeyA']).toEqual([{ position: 7, needsShift: false }]);
+  });
+
+  it('lists every position that has the key, lowest position first', () => {
+    const map = buildCodeToPositions(
+      layoutOf([{ 50: CODE.KeyA, 3: CODE.KeyA }, { 20: CODE.KeyA }]),
+    );
+    expect(positionsOf(map['KeyA'])).toEqual([3, 20, 50]);
+    expect(map['KeyA'].map((e) => e.position)).toEqual([3, 20, 50]);
+  });
+
+  it('keeps a position twice when it has the key with and without Shift', () => {
+    const map = buildCodeToPositions(layoutOf([{ 9: CODE.Slash }, { 9: CODE.SlashShift }]));
+    expect(map['Slash']).toEqual([
+      { position: 9, needsShift: false },
+      { position: 9, needsShift: true },
+    ]);
+  });
+
+  it('looks at a fourth layer too', () => {
+    const map = buildCodeToPositions(layoutOf([{}, {}, {}, { 12: CODE.KeyZ }]));
+    expect(map['KeyZ']).toEqual([{ position: 12, needsShift: false }]);
+  });
+
+  it('does not need Shift for the non-WSK keys', () => {
+    const map = buildCodeToPositions(layoutOf([{ 1: CODE.F1 }]));
+    expect(map['F1']).toEqual([{ position: 1, needsShift: false }]);
+  });
+
+  it('ignores codes that are not a key: empty, unknown, or not a keystroke', () => {
+    const NO_BREAK_SPACE = ACTIONS.find((a) => a.type === ActionType.NonKey)!.codeId;
+    const ALT_CODE = ACTIONS.find((a) => a.type === ActionType.WindowsAltCode)!.codeId;
+    expect(
+      buildCodeToPositions(layoutOf([{ 0: 0, 1: 128, 2: NO_BREAK_SPACE, 3: ALT_CODE }])),
+    ).toEqual({});
+  });
+
+  it('covers every position up to 89, and nothing past that', () => {
+    const map = buildCodeToPositions(layoutOf([{ 0: CODE.KeyA, 89: CODE.KeyZ }]));
+    expect(positionsOf(map['KeyA'])).toEqual([0]);
+    expect(positionsOf(map['KeyZ'])).toEqual([89]);
+  });
+
+  it('gives a layout with no layers an empty map', () => {
+    expect(buildCodeToPositions(layoutOf([]))).toEqual({});
+  });
+});
+
+describe('buildCodeToLayers, more cases', () => {
+  it('gives an empty map for a null layout', () => {
+    expect(buildCodeToLayers(null)).toEqual({});
+  });
+
+  it('names the layers by their order: second, third and fourth', () => {
+    const map = buildCodeToLayers(
+      layoutOf([{}, { 1: CODE.KeyA }, { 1: CODE.KeyZ }, { 1: CODE.Digit1 }]),
+    );
+    expect(map['KeyA']).toEqual([Layer.Secondary]);
+    expect(map['KeyZ']).toEqual([Layer.Tertiary]);
+    expect(map['Digit1']).toEqual([Layer.Quaternary]);
+  });
+
+  it('lists the layers of a key in order, whatever the order of positions', () => {
+    const map = buildCodeToLayers(
+      layoutOf([{ 80: CODE.KeyA }, {}, { 2: CODE.KeyA }, { 40: CODE.KeyA }]),
+    );
+    expect(map['KeyA']).toEqual([Layer.Primary, Layer.Tertiary, Layer.Quaternary]);
+  });
+
+  it('lists a layer once, even with the key at several positions', () => {
+    const map = buildCodeToLayers(layoutOf([{ 1: CODE.KeyA, 2: CODE.KeyA, 3: CODE.KeyA }]));
+    expect(map['KeyA']).toEqual([Layer.Primary]);
+  });
+
+  it('counts the Shift version of a key as that key', () => {
+    const map = buildCodeToLayers(layoutOf([{ 1: CODE.Slash }, { 1: CODE.SlashShift }]));
+    expect(map['Slash']).toEqual([Layer.Primary, Layer.Secondary]);
+  });
+
+  it('turns both space keys into one Space entry', () => {
+    const map = buildCodeToLayers(layoutOf([{ 1: CODE.SpaceLeft }, { 2: CODE.SpaceRight }]));
+    expect(map['Space']).toEqual([Layer.Primary, Layer.Secondary]);
+    expect(map['SpaceLeft']).toBeUndefined();
+    expect(map['SpaceRight']).toBeUndefined();
+  });
+
+  it('ignores codes that are not a key', () => {
+    expect(buildCodeToLayers(layoutOf([{ 0: 0, 1: 128 }]))).toEqual({});
+  });
+});
+
+describe('pressedPositions, more cases', () => {
+  const map = buildCodeToPositions(fixtureLayout());
+
+  it('gives nothing when nothing is held', () => {
+    expect(pressedPositions(map, new Set())).toEqual([]);
+  });
+
+  it('lights the shifted key with the right Shift as well', () => {
+    const lit = pressedPositions(map, new Set(['ShiftRight', 'Slash']));
+    expect(lit).toContain(POS.SlashShift);
+    expect(lit).toContain(POS.Slash);
+  });
+
+  it('lights both space keys for one Space', () => {
+    expect(pressedPositions(map, new Set(['Space'])).sort((a, b) => a - b)).toEqual([
+      POS.SpaceLeft,
+      POS.SpaceRight,
+    ]);
+  });
+
+  it('does not light a position twice when two held keys lead to it', () => {
+    const shared: Record<string, CodePosition[]> = {
+      A: [{ position: 4, needsShift: false }],
+      B: [{ position: 4, needsShift: false }],
+    };
+    expect(pressedPositions(shared, new Set(['A', 'B']))).toEqual([4]);
+  });
+
+  it('lights nothing for a key with only Shift positions, if Shift is not held', () => {
+    const onlyShift: Record<string, CodePosition[]> = {
+      Slash: [{ position: 4, needsShift: true }],
+    };
+    expect(pressedPositions(onlyShift, new Set(['Slash']))).toEqual([]);
+    expect(pressedPositions(onlyShift, new Set(['Slash', 'ShiftLeft']))).toEqual([4]);
+  });
+
+  it('works with an empty map', () => {
+    expect(pressedPositions({}, new Set(['KeyA']))).toEqual([]);
+  });
+});
+
+describe('liveModifiers, more cases', () => {
+  it('reports no modifiers for nothing held', () => {
+    expect(liveModifiers(new Set())).toEqual({ shift: false, altGraph: false });
+  });
+
+  it('reports both together', () => {
+    expect(liveModifiers(new Set(['ShiftLeft', 'AltRight']))).toEqual({
+      shift: true,
+      altGraph: true,
+    });
+  });
+
+  it('does not take the left Alt or Ctrl or Meta for AltGr or Shift', () => {
+    expect(liveModifiers(new Set(['AltLeft', 'ControlLeft', 'MetaLeft']))).toEqual({
+      shift: false,
+      altGraph: false,
+    });
+  });
+
+  it('does not take AltRight for Shift, nor Shift for AltGr', () => {
+    expect(liveModifiers(new Set(['AltRight'])).shift).toBeFalse();
+    expect(liveModifiers(new Set(['ShiftRight'])).altGraph).toBeFalse();
+  });
+});
